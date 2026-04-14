@@ -10,7 +10,9 @@
 # Note : this makefile builds a static library; although it's seems to be
 # possible to build working DLL and import lib, I didn't manage do to it.
 # If you do, please let me know.
-
+#-----------------------------------------------
+include version.mak
+#-----------------------------------------------
 # outputs
 LIBMNG_A   = libmng.a
 INSTALL_PREFIX = C:/MinGW/

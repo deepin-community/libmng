@@ -1,3 +1,5 @@
-version=3
-opts=dversionmangle=s/\+(debian|dfsg|ds|deb)(\.\d+)?$//,uversionmangle=s/$/+dfsg/ \
-http://sf.net/libmng/libmng-(.+)\.tar\.gz
+Version: 5
+
+Source: https://sf.net/libmng/
+Matching-Pattern: libmng-@ANY_VERSION@@ARCHIVE_EXT@
+Dversionmangle: s/\+dfsg\d*$//

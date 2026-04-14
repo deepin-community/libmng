@@ -1,21 +1,26 @@
 Source: libmng
 Section: libs
 Priority: optional
-Build-Depends: debhelper (>= 8.1.3),
+Build-Depends: autoconf,
+               automake,
+               debhelper-compat (= 13),
+               dpkg-dev (>= 1.16.1.1),
                libjpeg-dev,
                liblcms2-dev,
                libtool,
                zlib1g-dev
 Maintainer: Kartik Mistry <kartik@debian.org>
-Homepage: http://www.libmng.com
-Standards-Version: 3.9.2
+Homepage: https://www.libmng.com
+Standards-Version: 4.7.2
+Vcs-Git: https://salsa.debian.org/debian/libmng.git
+Vcs-Browser: https://salsa.debian.org/debian/libmng
 
-Package: libmng1
+Package: libmng2
 Architecture: any
 Multi-Arch: same
-Replaces: libmng-dev (<< 1.0.0-3), libmng
+Replaces: libmng, libmng-dev (<< 1.0.10+dfsg-3)
 Pre-Depends: ${misc:Pre-Depends}
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Multiple-image Network Graphics library
  The libmng library supports decoding, displaying, encoding, and various other
  manipulations of the Multiple-image Network Graphics (MNG) format image files.
@@ -28,11 +33,11 @@ Architecture: any
 Multi-Arch: same
 Section: libdevel
 Replaces: libmng
-Depends: ${misc:Depends},
-         libmng1 (= ${binary:Version}),
-         libjpeg-dev,
+Depends: libjpeg-dev,
          liblcms2-dev,
-         zlib1g-dev
+         libmng2 (= ${binary:Version}),
+         zlib1g-dev,
+         ${misc:Depends}
 Description: M-N-G library (Development headers)
  The libmng library supports decoding, displaying, encoding, and various other
  manipulations of the Multiple-image Network Graphics (MNG) format image files.

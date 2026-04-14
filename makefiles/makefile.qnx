@@ -8,17 +8,15 @@
 
 # The architecture of your target
 # one of arm, mips, ppc, sh, x86
+#----------------------------------
+include version.mak
+#----------------------------------
 ARCH = mips
 
 # The name of the library
 LIBNAME = libmng
 ARNAME = $(LIBNAME).a
 SONAME = $(LIBNAME).so
-
-# current version numbers
-MNGMAJ = 1
-MNGMIN = 0.9
-MNGVER = $(MNGMAJ).$(MNGMIN)
 
 # The artefact output folder
 OBJDIR = bin

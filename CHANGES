@@ -1,3 +1,26 @@
+2.0.3 (15.11.2014)
+---------------------------
+[szukw000@arcor.de] More changes to libmng_types.h.
+
+2.0.1 (19.01.2013)
+---------------------------
+[szukw000@arcor.de] There has been a change in JPEG version 9:
+added some code in libmng_types.h before
+#include <jpeglib.h>
+
+2.0.0 (dd.mm.2012)
+---------------------------
+Allows lcms1/lcms2:
+
+ ./configure --with-lcms2
+ cmake -DWITH_LCMS2:bool=on
+
+Cnf. the sample files 
+    'Configure.libmng' 
+and 'build-mng-cmake.sh'
+and 'cmake-compile.bat' resp. 'clean.bat'
+
+szukw000@arcor.de
 -----------------------------------------------------------
 
 1.0.10 (Jul 13th 2007)

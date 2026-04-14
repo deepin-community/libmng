@@ -1,3 +1,4 @@
+#include "config.h"
 /** ************************************************************************* */
 /* *             For conditions of distribution and use,                    * */
 /* *                see copyright notice in libmng.h                        * */

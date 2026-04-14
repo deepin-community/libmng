@@ -15,13 +15,18 @@ libmng.com) and I'll be happy to include it in the next release!
 
 Current files:
 
+configure.ac - a copy of
+Makefile.am - a copy of
+config.h.in - a copy of
+libmng.pc.in - a copy of
+
 makefile.bcb3 - Borland C++ Builder
-makefile.vcwin32 - Microsoft Visual C++
-makefile.unix - generic Unix
-makefile.linux - Linux ELF (builds shared library)
 makefile.dj - DJGPP
+makefile.linux - Linux ELF (builds shared library)
 makefile.mingw - builds a static library for mingw32
 makefile.mingwdll - builds a dynamic library for mingw32
-makefile.irix - builds a static library for SGI/IRIX (6.5.21)
+makefile.qnx - builds for QNX Neutrino
+makefile.unix - builds a static library for SGI/IRIX (6.5.21)
+makefile.vcwin32 - Microsoft Visual C++
 
-Makefile.am, configure.in and acinclude.m4 (if present) - automake/autoconf source
+version.mak - version info for makefiles

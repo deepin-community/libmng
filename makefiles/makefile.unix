@@ -6,6 +6,9 @@
 
 # Configuration options are now in libmng_conf.h
 
+#----------------------------------------
+include version.mak
+#----------------------------------------
 # The name of your C compiler:
 CC= cc
 

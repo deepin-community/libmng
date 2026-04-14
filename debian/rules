@@ -5,33 +5,53 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+
 ARCH = $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+
+CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
+CFLAGS := $(shell dpkg-buildflags --get CFLAGS)
+CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS)
+LDFLAGS := $(shell dpkg-buildflags --get LDFLAGS)
+
 ifeq ($(ARCH),alpha)
-  COMPILER_FLAGS=CFLAGS="-Wall -O0 -funroll-loops -fno-exceptions -pipe -mieee" CXXFLAGS="-Wall -O0 -funroll-loops -fno-exceptions -pipe -mieee"
-else
-  COMPILER_FLAGS=CFLAGS="-Wall -O2 -funroll-loops -fno-exceptions -pipe" CXXFLAGS="-Wall -O2 -funroll-loops -fno-exceptions -pipe"
+  CFLAGS := $(patsubst -O%,-O0,$(CFLAGS))
+  CXXFLAGS := $(patsubst -O%,-O0,$(CXXFLAGS))
 endif
+
+CFLAGS += -Wall -funroll-loops -fno-exceptions
+CXXFLAGS += -Wall -funroll-loops -fno-exceptions
 
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
-configure: configure-stamp
 configure-stamp:
 	dh_testdir
-	cp -f makefiles/makefile.linux makefile
+	dh_autoreconf
+	rm -rf build
+	mkdir -p build
+	cd build && ../configure --prefix=/usr \
+		CPPFLAGS="$(CPPFLAGS)" \
+		CFLAGS="$(CFLAGS)" \
+		CXXFLAGS="$(CXXFLAGS)" \
+		LDFLAGS="$(LDFLAGS)"
 	touch configure-stamp
 
 build: configure-stamp build-stamp build-arch build-indep
 build-arch: build-stamp
 build-indep: build-stamp
-build-stamp:
+build-stamp: configure-stamp
 	dh_testdir
+	$(MAKE) -C build
 	touch build-stamp
 
 clean:
 	dh_testdir
 	rm -f build-stamp configure-stamp
-	[ ! -f Makefile ] || $(MAKE) distclean
-	rm -f makefile *.o *.so.* *.a
+	rm -rf build
+	[ ! -f Makefile ] || $(MAKE) distclean || echo "ignored"
+	dh_autoreconf_clean
 	dh_clean
 
 install: build
@@ -39,18 +59,22 @@ install: build
 	dh_testroot
 	dh_prep
 
-	mkdir -p $(CURDIR)/debian/tmp/usr/lib
-	$(MAKE) install prefix=$(CURDIR)/debian/tmp/usr LIBPATH=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
+	mkdir -p $(CURDIR)/debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/pkgconfig
 
-	# Remove empty dir
-	rm -rf $(CURDIR)/debian/libmng1/usr/include
+	$(MAKE) -C build install \
+		DESTDIR=$(CURDIR)/debian/tmp
+
+	#Multiarch fixes
+	mv debian/tmp/usr/lib/libmng* debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)
+	mv $(CURDIR)/debian/tmp/usr/lib/pkgconfig/libmng.pc \
+		debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/pkgconfig/
 
 binary-indep: build install
 
 binary-arch: build install
 	dh_testdir
 	dh_testroot
-	dh_install --sourcedir=debian/tmp -plibmng-dev -plibmng1
+	dh_install --sourcedir=debian/tmp -plibmng-dev -plibmng2
 	dh_installman
 	dh_installdocs
 	dh_installexamples
@@ -60,7 +84,7 @@ binary-arch: build install
 	dh_strip
 	dh_compress
 	dh_fixperms
-	dh_makeshlibs -V
+	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol

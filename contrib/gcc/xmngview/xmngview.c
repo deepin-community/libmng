@@ -871,12 +871,10 @@ static mng_uint32 user_get_tick_count(mng_handle user_handle)
 	double sec, usec;
 	mng_uint32 ticks;
 
-	gettimeofday(&now_tv, NULL);
-
 	sec = (double)(now_tv.tv_sec - start_tv.tv_sec);
 	usec = (double)now_tv.tv_usec - (double)start_tv.tv_usec;
 	ticks = (mng_uint32)(sec * 1000.0 + usec/1000.0);
-//fprintf(stderr,"TICKS %u (%f:%f)\n", ticks, sec, usec);
+/* fprintf(stderr,"TICKS %u (%f:%f)\n", ticks, sec, usec); */
 	return ticks;
 }
 

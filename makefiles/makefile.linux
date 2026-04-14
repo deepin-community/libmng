@@ -5,34 +5,46 @@
 # this makefile is suitable for Linux ELF with gcc
 #
 # (this file is heavily copied from makefile.linux in the libpng package)
-
+#
+#-------------------------------------------------------
+include version.mak
+#-------------- which lcms version do you use? ---------
+#USE_LIBLCMSv1 = yes
+USE_LIBLCMSv2 = yes
+#-------------------------------------------------------
+prefix=/usr/local
+#------------------------------------------------------
 # compiler
 CC=gcc
 
 # default build options (this forces shared library compatibility!!)
 #OPTIONS = -DMNG_BUILD_SO
-OPTIONS = -DMNG_BUILD_SO -DMNG_FULL_CMS
+OPTIONS = -DMNG_BUILD_SO -DMNG_FULL_CMS 
+#OPTIONS += -DMNG_INCLUDE_ANG_PROPOSAL -DMNG_INCLUDE_MPNG_PROPOSAL
+OPTIONS += -DMNG_SUPPORT_FULL
+OPTIONS += -DMNG_STORE_CHUNKS -DMNG_ACCESS_CHUNKS -DMNG_ERROR_TELLTALE
 
-# where "make install" puts libmng.a,libmng.so*,libmng.h,libmng_conf.h,libmng_types.h
-prefix=/usr/local
+ifeq ($(USE_LIBLCMSv2),yes)
+OPTIONS += -DHAVE_LIBLCMS2
+LLCMS = -llcms2
+endif
+
+ifeq ($(USE_LIBLCMSv1),yes)
+OPTIONS += -DHAVE_LIBLCMS1
+LLCMS = -llcms
+endif
 
 # Where the zlib library and include files are located
-#ZLIBLIB=../zlib
-#ZLIBINC=../zlib
-ZLIBLIB=/usr/local/lib
-ZLIBINC=/usr/local/include
+ZLIBLIB=/usr/lib
+ZLIBINC=/usr/include
 
 # Where the jpeg library and include files are located
-#JPEGLIB=../jpgsrc
-#JPEGINC=../jpgsrc
-JPEGLIB=/usr/local/lib
-JPEGINC=/usr/local/include
+JPEGLIB=/usr/lib
+JPEGINC=/usr/include
 
 # Where the lcms library and include files are located
-#LCMSLIB=../lcms/lib
-#LCMSINC=../lcms/source
-LCMSLIB=/usr/local/lib
-LCMSINC=/usr/local/include
+LCMSLIB=/usr/lib
+LCMSINC=/usr/include
 
 ALIGN=
 # for i386:
@@ -50,15 +62,10 @@ LDFLAGS=-L. -Wl,-rpath,. \
 	-L$(ZLIBLIB) -Wl,-rpath,$(ZLIBLIB) \
 	-L$(JPEGLIB) -Wl,-rpath,$(JPEGLIB) \
 	-L$(LCMSLIB) -Wl,-rpath,$(LCMSLIB) \
-	-lmng -lz -ljpeg -llcms -lm
+	-lmng -lz -ljpeg $(LLCMS) -lm
 
 RANLIB=ranlib
 #RANLIB=echo
-
-# current version numbers
-MNGMAJ = 1
-MNGMIN = 1.0.9
-MNGVER = $(MNGMAJ).$(MNGMIN)
 
 INCPATH=$(prefix)/include
 LIBPATH=$(prefix)/lib
@@ -111,7 +118,7 @@ libmng.so.$(MNGVER): $(OBJSDLL)
     -lz -lm -lc
 
 install: libmng.a libmng.so.$(MNGVER)
-	-@mkdir $(INCPATH) $(LIBPATH)
+	-@mkdir -p $(INCPATH) $(LIBPATH)
 	cp libmng.h libmng_conf.h libmng_types.h $(INCPATH)
 	chmod 644 $(INCPATH)/libmng.h $(INCPATH)/libmng_conf.h $(INCPATH)/libmng_types.h
 	cp libmng.a libmng.so.$(MNGVER) $(LIBPATH)
@@ -122,6 +129,12 @@ install: libmng.a libmng.so.$(MNGVER)
 
 clean:
 	/bin/rm -f *.o libmng.a libmng.so*
+
+uninstall:
+	rm -f $(prefix)/include/libmng.h
+	rm -f $(prefix)/include/libmng_conf.h
+	rm -f $(prefix)/include/libmng_types.h
+	rm -f $(prefix)/lib/libmng*
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 

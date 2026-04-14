@@ -1,10 +1,9 @@
-PROC=athlon
-CFLAGS=-g -Wall -O2 -march=$(PROC) -mcpu=$(PROC)
-MOTIFLIB=/usr/local/lesstif/lib
-MOTIFINC=/usr/local/lesstif/include
+CFLAGS=-g -Wall
+MOTIFLIB=/usr/lib
+MOTIFINC=/usr/include
 MNGLIB=-lmng
-LIBS=-L/usr/X11R6/lib -L$(MOTIFLIB) -lXm -lXt -lX11 $(MNGLIB) -lm
-INC=-I/usr/X11R6/include -I$(MOTIFINC)
+LIBS=-L/usr/lib -L$(MOTIFLIB) -lXm -lXt -lX11 $(MNGLIB) -lm
+INC=-I/usr/include -I$(MOTIFINC)
 CC=gcc
 LDFLAGS=
 

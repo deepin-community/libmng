@@ -2,3 +2,4 @@ linux-makefile.diff
 kfreebsd-build-fix.diff
 manpage-typo-fixes.diff
 support-lcms2.patch
+CVE-2026-112008.patch
